@@ -1564,9 +1564,9 @@ int lib_route_map_entry_set_action_rmap_set_action_ipv6_address_modify(
 	switch (args->event) {
 	case NB_EV_VALIDATE:
 		if (action && IS_SET_IPV6_NH_GLOBAL(action)) {
+			zlog("my debug2: %s", args->dnode);
 			yang_dnode_get_ipv6(&i6a, args->dnode, NULL);
-			zlog("my debug2: %s",
-			     yang_dnode_get_ipv6(&i6a, args->dnode, NULL));
+			zlog("my debug3: %s", args->dnode);
 
 			if (IN6_IS_ADDR_UNSPECIFIED(&i6a)
 			    || IN6_IS_ADDR_LOOPBACK(&i6a)
