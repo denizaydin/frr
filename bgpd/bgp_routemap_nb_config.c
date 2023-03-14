@@ -15,9 +15,9 @@
 
 /* Add bgp route map rule. */
 static int bgp_route_match_add(struct route_map_index *index,
-		const char *command, const char *arg,
-		route_map_event_t type,
-		char *errmsg, size_t errmsg_len)
+			       const char *command, const char *arg,
+			       route_map_event_t type, char *errmsg,
+			       size_t errmsg_len)
 {
 	int retval = CMD_SUCCESS;
 	enum rmap_compile_rets ret;
@@ -44,9 +44,9 @@ static int bgp_route_match_add(struct route_map_index *index,
 
 /* Delete bgp route map rule. */
 static int bgp_route_match_delete(struct route_map_index *index,
-		const char *command, const char *arg,
-		route_map_event_t type,
-		char *errmsg, size_t errmsg_len)
+				  const char *command, const char *arg,
+				  route_map_event_t type, char *errmsg,
+				  size_t errmsg_len)
 {
 	enum rmap_compile_rets ret;
 	int retval = CMD_SUCCESS;
@@ -69,20 +69,19 @@ static int bgp_route_match_delete(struct route_map_index *index,
 
 	ret = route_map_delete_match(index, command, dep_name, type);
 	switch (ret) {
-		case RMAP_RULE_MISSING:
-			snprintf(errmsg, errmsg_len, "%% BGP Can't find rule.");
-			retval = CMD_WARNING_CONFIG_FAILED;
-			break;
-		case RMAP_COMPILE_ERROR:
-			snprintf(errmsg, errmsg_len,
-				 "%% BGP Argument is malformed.");
-			retval = CMD_WARNING_CONFIG_FAILED;
-			break;
-		case RMAP_COMPILE_SUCCESS:
-			/*
-			 * Nothing to do here
-			 */
-			break;
+	case RMAP_RULE_MISSING:
+		snprintf(errmsg, errmsg_len, "%% BGP Can't find rule.");
+		retval = CMD_WARNING_CONFIG_FAILED;
+		break;
+	case RMAP_COMPILE_ERROR:
+		snprintf(errmsg, errmsg_len, "%% BGP Argument is malformed.");
+		retval = CMD_WARNING_CONFIG_FAILED;
+		break;
+	case RMAP_COMPILE_SUCCESS:
+		/*
+		 * Nothing to do here
+		 */
+		break;
 	}
 
 	XFREE(MTYPE_ROUTE_MAP_RULE, dep_name);
@@ -92,10 +91,10 @@ static int bgp_route_match_delete(struct route_map_index *index,
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:local-preference
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:local-preference
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_local_preference_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_local_preference_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -118,8 +117,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_local_preference_modify
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "local-preference",
-				local_pref, RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  local_pref, RMAP_EVENT_MATCH_ADDED,
+					  args->errmsg, args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -127,11 +126,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_local_preference_modify
 		}
 	}
 
-		return NB_OK;
+	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_local_preference_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_local_preference_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -203,10 +201,10 @@ int lib_route_map_entry_match_condition_rmap_match_condition_alias_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:script
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:script
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_script_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_script_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -228,9 +226,9 @@ lib_route_map_entry_match_condition_rmap_match_condition_script_modify(
 		rhc->rhc_rule = "script";
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
-		ret = bgp_route_match_add(rhc->rhc_rmi, "script",
-				script, RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+		ret = bgp_route_match_add(rhc->rhc_rmi, "script", script,
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -241,8 +239,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_script_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_script_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_script_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -258,10 +255,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_script_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:origin
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:origin
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_origin_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_origin_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -284,8 +281,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_origin_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "origin", origin,
-					  RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -296,8 +293,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_origin_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_origin_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_origin_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -313,10 +309,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_origin_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:rpki
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:rpki
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_rpki_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_rpki_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -339,8 +335,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_rpki_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "rpki", rpki,
-				RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -351,8 +347,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_rpki_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_rpki_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_rpki_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -422,10 +417,10 @@ int lib_route_map_entry_match_condition_rmap_match_condition_rpki_extcommunity_d
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:probability
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:probability
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_probability_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_probability_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -460,8 +455,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_probability_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_probability_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_probability_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -476,10 +470,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_probability_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:source-vrf
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:source-vrf
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -502,8 +496,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "source-vrf", vrf,
-					  RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -514,8 +508,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -531,10 +524,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_source_vrf_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-ipv4-address
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-ipv4-address
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -557,8 +550,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_modif
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "peer", peer,
-					  RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -569,8 +562,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_modif
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -586,10 +578,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv4_address_destr
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-interface
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-interface
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -612,8 +604,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "peer", peer,
-				RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -624,8 +616,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -641,10 +632,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_interface_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-ipv6-address
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-ipv6-address
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -667,8 +658,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_modif
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "peer", peer,
-				RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -679,8 +670,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_modif
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -696,10 +686,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_ipv6_address_destr
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-local
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:peer-local
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_local_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_local_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -722,10 +712,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_local_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		if (value) {
-			ret = bgp_route_match_add(rhc->rhc_rmi, "peer",
-						"local",
-						RMAP_EVENT_MATCH_ADDED,
-						args->errmsg, args->errmsg_len);
+			ret = bgp_route_match_add(rhc->rhc_rmi, "peer", "local",
+						  RMAP_EVENT_MATCH_ADDED,
+						  args->errmsg,
+						  args->errmsg_len);
 
 			if (ret != RMAP_COMPILE_SUCCESS) {
 				rhc->rhc_mhook = NULL;
@@ -737,8 +727,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_local_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_peer_local_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_peer_local_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -754,10 +743,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_peer_local_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:list-name
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:list-name
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_list_name_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_list_name_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -774,8 +763,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_list_name_modify(
 		/* Add configuration. */
 		rhc = nb_running_get_entry(args->dnode, NULL, true);
 		list_name = yang_dnode_get_string(args->dnode, NULL);
-		condition = yang_dnode_get_string(args->dnode,
-				"../../frr-route-map:condition");
+		condition = yang_dnode_get_string(
+			args->dnode, "../../frr-route-map:condition");
 
 		if (IS_MATCH_AS_LIST(condition)) {
 			/* Set destroy information. */
@@ -783,40 +772,40 @@ lib_route_map_entry_match_condition_rmap_match_condition_list_name_modify(
 			rhc->rhc_rule = "as-path";
 			rhc->rhc_event = RMAP_EVENT_ASLIST_DELETED;
 
-			ret = bgp_route_match_add(rhc->rhc_rmi, "as-path",
-					list_name, RMAP_EVENT_ASLIST_ADDED,
-					args->errmsg, args->errmsg_len);
+			ret = bgp_route_match_add(
+				rhc->rhc_rmi, "as-path", list_name,
+				RMAP_EVENT_ASLIST_ADDED, args->errmsg,
+				args->errmsg_len);
 		} else if (IS_MATCH_MAC_LIST(condition)) {
 			/* Set destroy information. */
 			rhc->rhc_mhook = bgp_route_match_delete;
 			rhc->rhc_rule = "mac address";
 			rhc->rhc_event = RMAP_EVENT_FILTER_DELETED;
 
-			ret = bgp_route_match_add(rhc->rhc_rmi,
-						  "mac address",
-						  list_name,
-						  RMAP_EVENT_FILTER_ADDED,
-						  args->errmsg, args->errmsg_len);
+			ret = bgp_route_match_add(
+				rhc->rhc_rmi, "mac address", list_name,
+				RMAP_EVENT_FILTER_ADDED, args->errmsg,
+				args->errmsg_len);
 		} else if (IS_MATCH_ROUTE_SRC(condition)) {
 			/* Set destroy information. */
 			rhc->rhc_mhook = bgp_route_match_delete;
 			rhc->rhc_rule = "ip route-source";
 			rhc->rhc_event = RMAP_EVENT_FILTER_DELETED;
 
-			ret = bgp_route_match_add(rhc->rhc_rmi,
-					"ip route-source",
-					list_name, RMAP_EVENT_FILTER_ADDED,
-					args->errmsg, args->errmsg_len);
+			ret = bgp_route_match_add(
+				rhc->rhc_rmi, "ip route-source", list_name,
+				RMAP_EVENT_FILTER_ADDED, args->errmsg,
+				args->errmsg_len);
 		} else if (IS_MATCH_ROUTE_SRC_PL(condition)) {
 			/* Set destroy information. */
 			rhc->rhc_mhook = bgp_route_match_delete;
 			rhc->rhc_rule = "ip route-source prefix-list";
 			rhc->rhc_event = RMAP_EVENT_PLIST_DELETED;
 
-			ret = bgp_route_match_add(rhc->rhc_rmi,
-					"ip route-source prefix-list",
-					list_name, RMAP_EVENT_PLIST_ADDED,
-					args->errmsg, args->errmsg_len);
+			ret = bgp_route_match_add(
+				rhc->rhc_rmi, "ip route-source prefix-list",
+				list_name, RMAP_EVENT_PLIST_ADDED, args->errmsg,
+				args->errmsg_len);
 		}
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
@@ -828,8 +817,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_list_name_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_list_name_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_list_name_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -845,10 +833,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_list_name_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-default-route
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-default-route
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_create(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_create(
 	struct nb_cb_create_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -881,8 +869,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_crea
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -898,10 +885,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_default_route_dest
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-vni
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-vni
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -924,8 +911,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_modify(
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "evpn vni", vni,
-				RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -936,8 +923,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -953,10 +939,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_vni_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-route-type
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:evpn-route-type
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -978,10 +964,9 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_modify(
 		rhc->rhc_rule = "evpn route-type";
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
-		ret = bgp_route_match_add(rhc->rhc_rmi, "evpn route-type",
-					  type,
-					  RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+		ret = bgp_route_match_add(rhc->rhc_rmi, "evpn route-type", type,
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -992,8 +977,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1009,10 +993,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_evpn_route_type_destroy
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:route-distinguisher
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:route-distinguisher
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1035,8 +1019,8 @@ lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_mod
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
 		ret = bgp_route_match_add(rhc->rhc_rmi, "evpn rd", rd,
-				RMAP_EVENT_MATCH_ADDED,
-				args->errmsg, args->errmsg_len);
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -1047,8 +1031,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_mod
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1064,10 +1047,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_route_distinguisher_des
 }
 
 /*
- * XPath = /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:comm-list
+ * XPath =
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:comm-list
  */
-void
-lib_route_map_entry_match_condition_rmap_match_condition_comm_list_finish(
+void lib_route_map_entry_match_condition_rmap_match_condition_comm_list_finish(
 	struct nb_cb_apply_finish_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1131,8 +1114,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_comm_list_finish(
  * XPath:
  * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:comm-list/comm-list-name
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_modify(
 	struct nb_cb_modify_args *args)
 {
 	switch (args->event) {
@@ -1146,43 +1128,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_nam
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_destroy(
-	struct nb_cb_destroy_args *args)
-{
-	switch (args->event) {
-	case NB_EV_VALIDATE:
-	case NB_EV_PREPARE:
-	case NB_EV_ABORT:
-		break;
-	case NB_EV_APPLY:
-		return lib_route_map_entry_match_destroy(args);
-	}
-
-	return NB_OK;
-
-}
-
-/*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:comm-list/comm-list-name-exact-match
- */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_exact_match_modify(
-	struct nb_cb_modify_args *args)
-{
-	switch (args->event) {
-	case NB_EV_VALIDATE:
-	case NB_EV_PREPARE:
-	case NB_EV_ABORT:
-	case NB_EV_APPLY:
-		break;
-	}
-
-	return NB_OK;
-}
-
-int
-lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_exact_match_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1198,10 +1144,43 @@ lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_nam
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:ipv4-address
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:comm-list/comm-list-name-exact-match
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_exact_match_modify(
+	struct nb_cb_modify_args *args)
+{
+	switch (args->event) {
+	case NB_EV_VALIDATE:
+	case NB_EV_PREPARE:
+	case NB_EV_ABORT:
+	case NB_EV_APPLY:
+		break;
+	}
+
+	return NB_OK;
+}
+
+int lib_route_map_entry_match_condition_rmap_match_condition_comm_list_comm_list_name_exact_match_destroy(
+	struct nb_cb_destroy_args *args)
+{
+	switch (args->event) {
+	case NB_EV_VALIDATE:
+	case NB_EV_PREPARE:
+	case NB_EV_ABORT:
+		break;
+	case NB_EV_APPLY:
+		return lib_route_map_entry_match_destroy(args);
+	}
+
+	return NB_OK;
+}
+
+/*
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:ipv4-address
+ */
+int lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1223,9 +1202,9 @@ lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_modify(
 		rhc->rhc_rule = "ip next-hop address";
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
-		ret = bgp_route_match_add(rhc->rhc_rmi, rhc->rhc_rule,
-					  peer, RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+		ret = bgp_route_match_add(rhc->rhc_rmi, rhc->rhc_rule, peer,
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -1236,8 +1215,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1253,10 +1231,10 @@ lib_route_map_entry_match_condition_rmap_match_condition_ipv4_address_destroy(
 }
 
 /*
- * XPath: /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:ipv6-address
+ * XPath:
+ * /frr-route-map:lib/route-map/entry/match-condition/rmap-match-condition/frr-bgp-route-map:ipv6-address
  */
-int
-lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_modify(
+int lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1278,9 +1256,9 @@ lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_modify(
 		rhc->rhc_rule = "ipv6 next-hop address";
 		rhc->rhc_event = RMAP_EVENT_MATCH_DELETED;
 
-		ret = bgp_route_match_add(rhc->rhc_rmi, rhc->rhc_rule,
-					  peer, RMAP_EVENT_MATCH_ADDED,
-					  args->errmsg, args->errmsg_len);
+		ret = bgp_route_match_add(rhc->rhc_rmi, rhc->rhc_rule, peer,
+					  RMAP_EVENT_MATCH_ADDED, args->errmsg,
+					  args->errmsg_len);
 
 		if (ret != RMAP_COMPILE_SUCCESS) {
 			rhc->rhc_mhook = NULL;
@@ -1291,8 +1269,7 @@ lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_destroy(
+int lib_route_map_entry_match_condition_rmap_match_condition_ipv6_address_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1363,8 +1340,7 @@ int lib_route_map_entry_set_action_rmap_set_action_distance_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-rt
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_modify(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1397,8 +1373,7 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1417,8 +1392,7 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_rt_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-soo
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_modify(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -1440,8 +1414,7 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_modify(
 		rhc->rhc_rule = "extcommunity soo";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "extcommunity soo",
-				     type,
+		rv = generic_set_add(rhc->rhc_rmi, "extcommunity soo", type,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -1452,8 +1425,7 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_soo_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -1547,7 +1519,7 @@ int lib_route_map_entry_set_action_rmap_set_action_ipv4_nexthop_modify(
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
 		rv = generic_set_add(rhc->rhc_rmi, rhc->rhc_rule, type,
-				    args->errmsg, args->errmsg_len);
+				     args->errmsg, args->errmsg_len);
 
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -1592,10 +1564,9 @@ int lib_route_map_entry_set_action_rmap_set_action_ipv6_address_modify(
 	case NB_EV_VALIDATE:
 		if (action && IS_SET_IPV6_NH_GLOBAL(action)) {
 			yang_dnode_get_ipv6(&i6a, args->dnode, NULL);
-			if (IN6_IS_ADDR_UNSPECIFIED(&i6a)
-			    || IN6_IS_ADDR_LOOPBACK(&i6a)
-			    || IN6_IS_ADDR_MULTICAST(&i6a)
-			    || IN6_IS_ADDR_LINKLOCAL(&i6a))
+			if (IN6_IS_ADDR_UNSPECIFIED(&i6a) ||
+			    IN6_IS_ADDR_LOOPBACK(&i6a) ||
+			    IN6_IS_ADDR_MULTICAST(&i6a))
 				return NB_ERR_VALIDATION;
 		}
 	/* FALLTHROUGH */
@@ -1619,8 +1590,8 @@ int lib_route_map_entry_set_action_rmap_set_action_ipv6_address_modify(
 	else
 		rhc->rhc_rule = "ipv6 vpn next-hop";
 
-	rv = generic_set_add(rhc->rhc_rmi, rhc->rhc_rule, addr,
-			     args->errmsg, args->errmsg_len);
+	rv = generic_set_add(rhc->rhc_rmi, rhc->rhc_rule, addr, args->errmsg,
+			     args->errmsg_len);
 
 	if (rv != CMD_SUCCESS) {
 		rhc->rhc_shook = NULL;
@@ -1671,7 +1642,7 @@ int lib_route_map_entry_set_action_rmap_set_action_preference_modify(
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
 		action = yang_dnode_get_string(args->dnode,
-				"../../frr-route-map:action");
+					       "../../frr-route-map:action");
 
 		if (value) {
 			if (IS_SET_IPV6_PEER_ADDR(action))
@@ -1680,8 +1651,7 @@ int lib_route_map_entry_set_action_rmap_set_action_preference_modify(
 			else
 				rhc->rhc_rule = "ipv6 next-hop prefer-global";
 
-			rv = generic_set_add(rhc->rhc_rmi, rhc->rhc_rule,
-					     NULL,
+			rv = generic_set_add(rhc->rhc_rmi, rhc->rhc_rule, NULL,
 					     args->errmsg, args->errmsg_len);
 		}
 
@@ -1787,8 +1757,7 @@ int lib_route_map_entry_set_action_rmap_set_action_local_pref_modify(
 		rhc->rhc_rule = "local-preference";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "local-preference",
-				     type,
+		rv = generic_set_add(rhc->rhc_rmi, "local-preference", type,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -1840,8 +1809,8 @@ int lib_route_map_entry_set_action_rmap_set_action_weight_modify(
 		rhc->rhc_rule = "weight";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "weight", type,
-				     args->errmsg, args->errmsg_len);
+		rv = generic_set_add(rhc->rhc_rmi, "weight", type, args->errmsg,
+				     args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
 			return NB_ERR_INCONSISTENCY;
@@ -1892,8 +1861,8 @@ int lib_route_map_entry_set_action_rmap_set_action_origin_modify(
 		rhc->rhc_rule = "origin";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "origin", type,
-				     args->errmsg, args->errmsg_len);
+		rv = generic_set_add(rhc->rhc_rmi, "origin", type, args->errmsg,
+				     args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
 			return NB_ERR_INCONSISTENCY;
@@ -1913,7 +1882,6 @@ int lib_route_map_entry_set_action_rmap_set_action_origin_destroy(
 		break;
 	case NB_EV_APPLY:
 		return lib_route_map_entry_set_destroy(args);
-
 	}
 
 	return NB_OK;
@@ -1997,8 +1965,8 @@ int lib_route_map_entry_set_action_rmap_set_action_table_modify(
 		rhc->rhc_rule = "table";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "table", type,
-				     args->errmsg, args->errmsg_len);
+		rv = generic_set_add(rhc->rhc_rmi, "table", type, args->errmsg,
+				     args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
 			return NB_ERR_INCONSISTENCY;
@@ -2027,8 +1995,7 @@ int lib_route_map_entry_set_action_rmap_set_action_table_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:atomic-aggregate
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_atomic_aggregate_create(
+int lib_route_map_entry_set_action_rmap_set_action_atomic_aggregate_create(
 	struct nb_cb_create_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2059,8 +2026,7 @@ lib_route_map_entry_set_action_rmap_set_action_atomic_aggregate_create(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_atomic_aggregate_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_atomic_aggregate_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2131,8 +2097,7 @@ int lib_route_map_entry_set_action_rmap_set_action_aigp_metric_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:prepend-as-path
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_modify(
+int lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2154,8 +2119,7 @@ lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_modify(
 		rhc->rhc_rule = "as-path prepend";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "as-path prepend",
-				     type,
+		rv = generic_set_add(rhc->rhc_rmi, "as-path prepend", type,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -2166,8 +2130,7 @@ lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_prepend_as_path_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2210,13 +2173,12 @@ int lib_route_map_entry_set_action_rmap_set_action_last_as_modify(
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
 		argstr = XMALLOC(MTYPE_ROUTE_MAP_COMPILED,
-				strlen(value) + strlen("last-as") + 2);
+				 strlen(value) + strlen("last-as") + 2);
 
 		snprintf(argstr, (strlen(value) + strlen("last-as") + 2),
 			 "last-as %s", value);
 
-		rv = generic_set_add(rhc->rhc_rmi, "as-path prepend",
-				     argstr,
+		rv = generic_set_add(rhc->rhc_rmi, "as-path prepend", argstr,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -2249,8 +2211,7 @@ int lib_route_map_entry_set_action_rmap_set_action_last_as_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:exclude-as-path
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_modify(
+int lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2272,8 +2233,7 @@ lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_modify(
 		rhc->rhc_rule = "as-path exclude";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "as-path exclude",
-				     type,
+		rv = generic_set_add(rhc->rhc_rmi, "as-path exclude", type,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -2284,8 +2244,7 @@ lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_exclude_as_path_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2379,8 +2338,7 @@ int lib_route_map_entry_set_action_rmap_set_action_community_none_modify(
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
 		if (none) {
-			rv = generic_set_add(rhc->rhc_rmi, "community",
-					     "none",
+			rv = generic_set_add(rhc->rhc_rmi, "community", "none",
 					     args->errmsg, args->errmsg_len);
 			if (rv != CMD_SUCCESS) {
 				rhc->rhc_shook = NULL;
@@ -2395,8 +2353,7 @@ int lib_route_map_entry_set_action_rmap_set_action_community_none_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_community_none_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_community_none_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2415,8 +2372,7 @@ lib_route_map_entry_set_action_rmap_set_action_community_none_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:community-string
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_community_string_modify(
+int lib_route_map_entry_set_action_rmap_set_action_community_string_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2449,8 +2405,7 @@ lib_route_map_entry_set_action_rmap_set_action_community_string_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_community_string_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_community_string_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2469,8 +2424,7 @@ lib_route_map_entry_set_action_rmap_set_action_community_string_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:large-community-none
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_large_community_none_modify(
+int lib_route_map_entry_set_action_rmap_set_action_large_community_none_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2493,15 +2447,14 @@ lib_route_map_entry_set_action_rmap_set_action_large_community_none_modify(
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
 		if (none) {
-			rv = generic_set_add(rhc->rhc_rmi,
-					     "large-community",
-					     "none",
-					      args->errmsg, args->errmsg_len);
+			rv = generic_set_add(rhc->rhc_rmi, "large-community",
+					     "none", args->errmsg,
+					     args->errmsg_len);
 			if (rv != CMD_SUCCESS) {
 				rhc->rhc_shook = NULL;
 				return NB_ERR_INCONSISTENCY;
 			}
-		return NB_OK;
+			return NB_OK;
 		}
 
 		return NB_ERR_INCONSISTENCY;
@@ -2510,8 +2463,7 @@ lib_route_map_entry_set_action_rmap_set_action_large_community_none_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_large_community_none_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_large_community_none_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2530,8 +2482,7 @@ lib_route_map_entry_set_action_rmap_set_action_large_community_none_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:large-community-string
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_large_community_string_modify(
+int lib_route_map_entry_set_action_rmap_set_action_large_community_string_modify(
 	struct nb_cb_modify_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2553,8 +2504,7 @@ lib_route_map_entry_set_action_rmap_set_action_large_community_string_modify(
 		rhc->rhc_rule = "large-community";
 		rhc->rhc_event = RMAP_EVENT_SET_DELETED;
 
-		rv = generic_set_add(rhc->rhc_rmi, "large-community",
-				     type,
+		rv = generic_set_add(rhc->rhc_rmi, "large-community", type,
 				     args->errmsg, args->errmsg_len);
 		if (rv != CMD_SUCCESS) {
 			rhc->rhc_shook = NULL;
@@ -2565,8 +2515,7 @@ lib_route_map_entry_set_action_rmap_set_action_large_community_string_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_large_community_string_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_large_community_string_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2624,8 +2573,7 @@ void lib_route_map_entry_set_action_rmap_set_action_aggregator_finish(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:aggregator/aggregator-asn
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_modify(
+int lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_modify(
 	struct nb_cb_modify_args *args)
 {
 	switch (args->event) {
@@ -2639,8 +2587,7 @@ lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2659,8 +2606,7 @@ lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_asn_destroy
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:aggregator/aggregator-address
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_address_modify(
+int lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_address_modify(
 	struct nb_cb_modify_args *args)
 {
 	switch (args->event) {
@@ -2674,8 +2620,7 @@ lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_address_mod
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_address_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_aggregator_aggregator_address_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2716,7 +2661,7 @@ int lib_route_map_entry_set_action_rmap_set_action_comm_list_name_modify(
 		rhc->rhc_shook = generic_set_delete;
 
 		action = yang_dnode_get_string(args->dnode,
-				"../../frr-route-map:action");
+					       "../../frr-route-map:action");
 		if (IS_SET_COMM_LIST_DEL(action))
 			rhc->rhc_rule = "comm-list";
 		else
@@ -2736,8 +2681,7 @@ int lib_route_map_entry_set_action_rmap_set_action_comm_list_name_modify(
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_comm_list_name_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_comm_list_name_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	switch (args->event) {
@@ -2756,8 +2700,7 @@ lib_route_map_entry_set_action_rmap_set_action_comm_list_name_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-lb
  */
-void
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_finish(
+void lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_finish(
 	struct nb_cb_apply_finish_args *args)
 {
 	struct routemap_hook_context *rhc;
@@ -2804,16 +2747,14 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_finish(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-lb/lb-type
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_lb_type_modify(
-		struct nb_cb_modify_args *args)
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_lb_type_modify(
+	struct nb_cb_modify_args *args)
 {
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_lb_type_destroy(
-		struct nb_cb_destroy_args *args)
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_lb_type_destroy(
+	struct nb_cb_destroy_args *args)
 {
 	return lib_route_map_entry_set_destroy(args);
 }
@@ -2822,16 +2763,14 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_lb_type_destroy(
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-lb/bandwidth
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_bandwidth_modify(
-		struct nb_cb_modify_args *args)
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_bandwidth_modify(
+	struct nb_cb_modify_args *args)
 {
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_bandwidth_destroy(
-		struct nb_cb_destroy_args *args)
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_bandwidth_destroy(
+	struct nb_cb_destroy_args *args)
 {
 	return lib_route_map_entry_set_destroy(args);
 }
@@ -2840,15 +2779,13 @@ lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_bandwidth_destroy
  * XPath:
  * /frr-route-map:lib/route-map/entry/set-action/rmap-set-action/frr-bgp-route-map:extcommunity-lb/two-octet-as-specific
  */
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_two_octet_as_specific_modify(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_two_octet_as_specific_modify(
 	struct nb_cb_modify_args *args)
 {
 	return NB_OK;
 }
 
-int
-lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_two_octet_as_specific_destroy(
+int lib_route_map_entry_set_action_rmap_set_action_extcommunity_lb_two_octet_as_specific_destroy(
 	struct nb_cb_destroy_args *args)
 {
 	return lib_route_map_entry_set_destroy(args);
