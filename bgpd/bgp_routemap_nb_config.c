@@ -1560,7 +1560,7 @@ int lib_route_map_entry_set_action_rmap_set_action_ipv6_address_modify(
 
 	action = yang_dnode_get_string(args->dnode,
 				       "../../frr-route-map:action");
-	zlog("my debug1:" args->event);
+	zlog_debug("my debug1: %s", args->event);
 	switch (args->event) {
 	case NB_EV_VALIDATE:
 		if (action && IS_SET_IPV6_NH_GLOBAL(action)) {
